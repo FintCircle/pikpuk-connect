@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 import automobile from "@/assets/early-automobile.jpg";
 import avenue from "@/assets/fifth-avenue-1908.jpg";
@@ -138,14 +139,36 @@ function Index() {
             touchStart.current = null;
           }}
         >
-          <img
-            className="primary-photo"
-            src={photo.src}
-            alt={photo.alt}
-            width={1536}
-            height={1024}
-            aria-describedby={mode === "info" ? "full-story" : undefined}
-          />
+          <TransformWrapper
+            key={`${current}-${mode === "set" ? "set" : "viewer"}`}
+            initialScale={1}
+            minScale={1}
+            maxScale={5}
+            centerOnInit
+            centerZoomedOut
+            limitToBounds
+            disabled={mode === "set"}
+            wheel={{ step: 0.12 }}
+            doubleClick={{ mode: "zoomIn", step: 0.7 }}
+          >
+            <TransformComponent
+              wrapperClass="photo-canvas"
+              contentClass="photo-canvas-content"
+              wrapperProps={{
+                "aria-label": "Zoomable and pannable historical photograph",
+              }}
+            >
+              <img
+                className="primary-photo"
+                src={photo.src}
+                alt={photo.alt}
+                width={1536}
+                height={1024}
+                draggable={false}
+                aria-describedby={mode === "info" ? "full-story" : undefined}
+              />
+            </TransformComponent>
+          </TransformWrapper>
 
           {mode === "photo" && (
             <ArchiveButton
