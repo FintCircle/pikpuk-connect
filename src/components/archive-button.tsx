@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 type ArchiveButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   asChild?: boolean;
   children: ReactNode;
-  variant?: "plain" | "square" | "icon" | "thumbnail";
+  variant?: "plain" | "square" | "icon" | "thumbnail" | "menu";
 };
 
 const variants = {
@@ -18,6 +18,8 @@ const variants = {
     "inline-flex size-10 shrink-0 items-center justify-center border border-control-border bg-control text-control-foreground shadow-archive backdrop-blur-sm transition-colors hover:bg-control-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
   thumbnail:
     "relative aspect-[3/2] w-24 overflow-hidden border border-transparent bg-muted opacity-60 transition-all hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[active=true]:border-foreground data-[active=true]:opacity-100 sm:w-28",
+  menu:
+    "flex w-full items-start justify-between gap-6 bg-transparent py-1 text-left font-serif text-[32px] leading-none text-foreground transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 } as const;
 
 export function ArchiveButton({

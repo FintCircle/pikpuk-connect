@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Images,
   Info,
-  Type,
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,6 +14,8 @@ import avenue from "@/assets/fifth-avenue-1908.jpg";
 import aerial from "@/assets/fifth-avenue-aerial.jpg";
 import crossing from "@/assets/fifth-avenue-crossing.jpg";
 import { ArchiveButton } from "@/components/archive-button";
+import { PikPukHeader } from "@/components/pikpuk-header";
+import { useAuth } from "@/lib/auth";
 
 const primaryPhoto = {
   src: avenue,
@@ -75,18 +76,16 @@ function Index() {
   const [current, setCurrent] = useState(0);
   const [captionsOn, setCaptionsOn] = useState(true);
   const touchStart = useRef<number | null>(null);
+  const { profile } = useAuth();
 
   useEffect(() => {
     const saved = window.localStorage.getItem("pikpuk-captions");
     if (saved !== null) setCaptionsOn(saved === "on");
   }, []);
 
-  const toggleCaptions = () => {
-    setCaptionsOn((visible) => {
-      window.localStorage.setItem("pikpuk-captions", visible ? "off" : "on");
-      return !visible;
-    });
-  };
+  useEffect(() => {
+    if (profile) setCaptionsOn(profile.captions_enabled);
+  }, [profile]);
 
   const move = useCallback((direction: number) => {
     setCurrent((index) => (index + direction + photos.length) % photos.length);
@@ -106,25 +105,7 @@ function Index() {
 
   return (
     <main className="archive-shell">
-      <header className="archive-header">
-        <a className="wordmark" href="/" aria-label="PikPuk home">
-          PikPuk
-        </a>
-        <div className="header-context" aria-label="Archive entry location">
-          <span>Archive 001</span>
-          <span aria-hidden="true">·</span>
-          <span>New York</span>
-        </div>
-        <ArchiveButton
-          variant="icon"
-          onClick={toggleCaptions}
-          aria-pressed={captionsOn}
-          aria-label={captionsOn ? "Hide captions" : "Show captions"}
-          title={captionsOn ? "Hide captions" : "Show captions"}
-        >
-          <Type size={17} strokeWidth={1.5} />
-        </ArchiveButton>
-      </header>
+      <PikPukHeader />
 
       <section className={`viewer ${mode === "info" ? "viewer-info" : ""}`}>
         <div
