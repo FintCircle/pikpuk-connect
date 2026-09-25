@@ -125,7 +125,7 @@ button { cursor: pointer; }
   .caption-wash { padding: 80px 70px 22px 18px; }
   .caption { font-size: 19px; }
   .set-trigger { right: 14px; bottom: 14px; }
-  .photo-square { position: fixed; left: 14px; bottom: 14px; width: 96px; z-index: 8; }
+  .photo-square { position: absolute; left: 14px; bottom: 14px; width: 96px; z-index: 8; }
   .viewer-info .photo-stage { height: 42svh; }
   .viewer-info .caption-wash { display: none; }
   .info-panel { position: absolute; inset: calc(56px + 42svh) 0 0; border-left: 0; border-top: 1px solid var(--border); z-index: 5; }
