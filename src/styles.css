@@ -114,6 +114,8 @@ button { cursor: pointer; }
 .menu-link, .menu-section button { min-height: 34px; }
 .menu-link { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; color: var(--foreground); font-family: var(--font-serif-custom); font-size: 32px; line-height: 1; text-decoration: none; transition: color 160ms ease; }
 .menu-link:hover { color: var(--muted-foreground); }
+.menu-link-secondary { color: var(--muted-foreground); font-size: 24px; }
+.menu-link-secondary:hover { color: var(--foreground); }
 .menu-link small, .menu-section button small { align-self: center; color: var(--muted-foreground); font-family: var(--font-sans-custom); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; }
 .menu-divider { height: 1px; margin: 34px 0 0; background: var(--menu-rule); opacity: .45; }
 .menu-section-label { margin: 0 0 12px; color: var(--muted-foreground); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; }

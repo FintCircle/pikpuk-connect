@@ -13,9 +13,9 @@ function authHref(mode: "signin" | "signup", redirect = "/") {
   return query ? `/auth?${query}` : "/auth";
 }
 
-function MenuAnchor({ href, label, subtext, onSelect }: { href: string; label: string; subtext?: string; onSelect: () => void }) {
+function MenuAnchor({ href, label, subtext, onSelect, secondary = false }: { href: string; label: string; subtext?: string; onSelect: () => void; secondary?: boolean }) {
   return (
-    <a className="menu-link" href={href} onClick={onSelect}>
+    <a className={`menu-link ${secondary ? "menu-link-secondary" : ""}`} href={href} onClick={onSelect}>
       <span>{label}</span>
       {subtext ? <small>{subtext}</small> : null}
     </a>
@@ -137,7 +137,7 @@ export function PikPukHeader() {
                 ) : (
                   <nav className="menu-section" aria-label="Account access">
                     <MenuAnchor href={authHref("signin")} label="Sign in" onSelect={closeMenu} />
-                    <MenuAnchor href={authHref("signup")} label="Create account" onSelect={closeMenu} />
+                    <MenuAnchor href={authHref("signup")} label="Create account" onSelect={closeMenu} secondary />
                   </nav>
                 )}
 
