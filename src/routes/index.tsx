@@ -15,14 +15,16 @@ import aerial from "@/assets/fifth-avenue-aerial.jpg";
 import crossing from "@/assets/fifth-avenue-crossing.jpg";
 import { ArchiveButton } from "@/components/archive-button";
 
+const primaryPhoto = {
+  src: avenue,
+  alt: "Fifth Avenue filled with early motorcars, horse-drawn carriages, and pedestrians around 1908.",
+  caption:
+    "Fifth Avenue, New York, around 1908, as automobiles began appearing alongside horse-drawn traffic.",
+  credit: "Representative archival image · PikPuk study collection",
+};
+
 const photos = [
-  {
-    src: avenue,
-    alt: "Fifth Avenue filled with early motorcars, horse-drawn carriages, and pedestrians around 1908.",
-    caption:
-      "Fifth Avenue, New York, around 1908, as automobiles began appearing alongside horse-drawn traffic.",
-    credit: "Representative archival image · PikPuk study collection",
-  },
+  primaryPhoto,
   {
     src: crossing,
     alt: "A busy Fifth Avenue crossing with an early open-top motorcar and horse-drawn traffic.",
@@ -99,7 +101,7 @@ function Index() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [mode, move]);
 
-  const photo = photos[current];
+  const photo = photos[current] ?? primaryPhoto;
 
   return (
     <main className="archive-shell">
