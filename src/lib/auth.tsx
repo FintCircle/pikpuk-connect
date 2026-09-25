@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables, TablesUpdate } from "@/integrations/supabase/types";
 
 type ProfileRow = Tables<"profiles">;
+const authRedirects = ["/", "/interests", "/settings", "/account", "/contribute", "/submissions"] as const;
 
 type ProfileUpdate = Pick<
   TablesUpdate<"profiles">,
@@ -45,6 +46,13 @@ function getDisplayName(user: User) {
   const metadata = user.user_metadata;
   const name = metadata?.["name"] ?? metadata?.["full_name"];
   return typeof name === "string" && name.trim() ? name : null;
+}
+
+function consumeAuthRedirect() {
+  const stored = window.sessionStorage.getItem("pikpuk-auth-redirect");
+  window.sessionStorage.removeItem("pikpuk-auth-redirect");
+  if (!stored || !authRedirects.includes(stored as (typeof authRedirects)[number])) return;
+  if (window.location.pathname !== stored) window.location.assign(stored);
 }
 
 async function ensureProfile(user: User): Promise<PikPukProfile> {
@@ -160,6 +168,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
         }
         setUser(data.user);
         await loadProfileForUser(data.user);
+        if (active) consumeAuthRedirect();
       } finally {
         if (active) setIsLoading(false);
       }
@@ -178,7 +187,9 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
       } else {
         void queryClient.invalidateQueries();
         window.setTimeout(() => {
-          void loadProfileForUser(nextUser).catch(() => undefined);
+          void loadProfileForUser(nextUser)
+            .then(consumeAuthRedirect)
+            .catch(() => undefined);
         }, 0);
       }
       void router.invalidate();
