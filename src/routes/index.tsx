@@ -150,7 +150,7 @@ function Index() {
             disabled={mode === "set"}
             wheel={{ step: 0.12 }}
             doubleClick={{ mode: "zoomIn", step: 0.7 }}
-            onTransformed={(_ref, state) => {
+            onTransform={(_ref, state) => {
               photoScale.current = state.scale;
             }}
           >
