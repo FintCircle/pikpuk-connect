@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Account state lives in the root AuthProvider backed by Lovable Cloud profile rows; this keeps header/menu auth state consistent across routes.
+- Main-view swipes navigate between distinct archive entries, while photo-set swipes navigate only within the active entry; this preserves the archive/gallery distinction.
