@@ -13,6 +13,8 @@ import automobile from "@/assets/early-automobile.jpg";
 import avenue from "@/assets/fifth-avenue-1908.jpg";
 import aerial from "@/assets/fifth-avenue-aerial.jpg";
 import crossing from "@/assets/fifth-avenue-crossing.jpg";
+import kampalaRailway from "@/assets/kampala-railway-1915.jpg";
+import londonMarket from "@/assets/london-flower-market-1928.jpg";
 import { ArchiveButton } from "@/components/archive-button";
 import { PikPukHeader } from "@/components/pikpuk-header";
 import { useAuth } from "@/lib/auth";
@@ -25,28 +27,66 @@ const primaryPhoto = {
   credit: "Representative archival image · PikPuk study collection",
 };
 
-const photos = [
-  primaryPhoto,
+const archiveEntries = [
   {
-    src: crossing,
-    alt: "A busy Fifth Avenue crossing with an early open-top motorcar and horse-drawn traffic.",
-    caption:
-      "A motorcar enters the avenue while horse-drawn traffic still occupies much of the street.",
-    credit: "Representative archival image · PikPuk study collection",
+    title: "Fifth Avenue",
+    place: "New York City",
+    date: "c. 1908",
+    story: [
+      "At the beginning of the twentieth century, Fifth Avenue was becoming a stage for a profound change in urban life. Early automobiles moved beside horse-drawn carriages while pedestrians filled the pavements.",
+      "The scene captures neither the first car nor the last carriage. Instead, it preserves the more revealing middle—the years when two eras occupied the same street.",
+    ],
+    photos: [
+      primaryPhoto,
+      {
+        src: crossing,
+        alt: "A busy Fifth Avenue crossing with an early open-top motorcar and horse-drawn traffic.",
+        caption: "A motorcar enters the avenue while horse-drawn traffic still occupies much of the street.",
+        credit: "Representative archival image · PikPuk study collection",
+      },
+      {
+        src: automobile,
+        alt: "An early automobile passing a horse-drawn carriage on Fifth Avenue.",
+        caption: "The old and new share the road: an open automobile passes a horse-drawn carriage.",
+        credit: "Representative archival image · PikPuk study collection",
+      },
+      {
+        src: aerial,
+        alt: "An elevated view down Fifth Avenue with pedestrians, carriages, and early automobiles.",
+        caption: "From above, the avenue reveals a city in transition between horse power and the motor age.",
+        credit: "Representative archival image · PikPuk study collection",
+      },
+    ],
   },
   {
-    src: automobile,
-    alt: "An early automobile passing a horse-drawn carriage on Fifth Avenue.",
-    caption:
-      "The old and new share the road: an open automobile passes a horse-drawn carriage.",
-    credit: "Representative archival image · PikPuk study collection",
+    title: "Railway Station",
+    place: "Kampala, Uganda",
+    date: "c. 1915",
+    story: [
+      "The railway reshaped movement through inland East Africa, bringing travelers, goods, and new rhythms of work to growing towns.",
+      "This representative scene preserves the station platform as a meeting place between local labor, long-distance travel, and a changing city.",
+    ],
+    photos: [{
+      src: kampalaRailway,
+      alt: "A steam train, travelers, and porters at a railway station in Kampala around 1915.",
+      caption: "Travelers and porters gather beside a steam train at Kampala railway station, around 1915.",
+      credit: "Representative archival image · PikPuk study collection",
+    }],
   },
   {
-    src: aerial,
-    alt: "An elevated view down Fifth Avenue with pedestrians, carriages, and early automobiles.",
-    caption:
-      "From above, the avenue reveals a city in transition between horse power and the motor age.",
-    credit: "Representative archival image · PikPuk study collection",
+    title: "Flower Market",
+    place: "London, England",
+    date: "c. 1928",
+    story: [
+      "Street markets made the city's daily exchange visible: growers, sellers, and customers met before the working day had fully begun.",
+      "The wet pavement and handcarts place this representative scene within the ordinary commerce of interwar London.",
+    ],
+    photos: [{
+      src: londonMarket,
+      alt: "Flower sellers and shoppers at a wet London street market around 1928.",
+      caption: "Flower sellers meet morning shoppers on a rain-darkened London street, around 1928.",
+      credit: "Representative archival image · PikPuk study collection",
+    }],
   },
 ];
 
@@ -73,6 +113,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [mode, setMode] = useState<"photo" | "info" | "set">("photo");
+  const [entryIndex, setEntryIndex] = useState(0);
   const [current, setCurrent] = useState(0);
   const [captionsOn, setCaptionsOn] = useState(true);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -89,7 +130,13 @@ function Index() {
   }, [profile]);
 
   const move = useCallback((direction: number) => {
-    setCurrent((index) => (index + direction + photos.length) % photos.length);
+    const photoCount = archiveEntries[entryIndex]?.photos.length ?? 1;
+    setCurrent((index) => (index + direction + photoCount) % photoCount);
+  }, [entryIndex]);
+
+  const moveEntry = useCallback((direction: number) => {
+    setEntryIndex((index) => (index + direction + archiveEntries.length) % archiveEntries.length);
+    setCurrent(0);
   }, []);
 
   useEffect(() => {
@@ -106,7 +153,9 @@ function Index() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [mode, move]);
 
-  const photo = photos[current] ?? primaryPhoto;
+  const entry = archiveEntries[entryIndex] ?? archiveEntries[0];
+  const photos = entry.photos;
+  const photo = photos[current] ?? photos[0] ?? primaryPhoto;
 
   return (
     <main className="archive-shell">
@@ -132,7 +181,8 @@ function Index() {
             const deltaX = touch.clientX - start.x;
             const deltaY = touch.clientY - start.y;
             if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
-              move(deltaX < 0 ? 1 : -1);
+              if (mode === "set") move(deltaX < 0 ? 1 : -1);
+              else moveEntry(deltaX < 0 ? 1 : -1);
             }
           }}
           onTouchCancel={() => {
@@ -140,7 +190,7 @@ function Index() {
           }}
         >
           <TransformWrapper
-            key={`${current}-${mode === "set" ? "set" : "viewer"}`}
+            key={`${entryIndex}-${current}-${mode === "set" ? "set" : "viewer"}`}
             initialScale={1}
             minScale={1}
             maxScale={5}
@@ -180,8 +230,8 @@ function Index() {
               onClick={() => setMode("info")}
               aria-label="Read the full historical record"
             >
-              <span className="square-date">1908</span>
-              <span className="square-place">New York City</span>
+              <span className="square-date">{entry.date.replace("c. ", "")}</span>
+              <span className="square-place">{entry.place}</span>
               <span className="square-action">More <ArrowRight size={13} /></span>
             </ArchiveButton>
           )}
@@ -193,7 +243,7 @@ function Index() {
               onClick={() => setMode("photo")}
               aria-label="Return to photograph"
             >
-              <img src={avenue} alt="" width={1536} height={1024} />
+              <img src={photo.src} alt="" width={1536} height={1024} />
               <span>Photo <ArrowLeft size={13} /></span>
             </ArchiveButton>
           )}
@@ -257,17 +307,16 @@ function Index() {
           <aside className="info-panel" aria-label="Historical record">
             <div className="info-panel-inner">
               <div className="info-kicker"><Info size={14} /> Historical record</div>
-              <h1>Fifth Avenue</h1>
-              <p className="info-deck">New York City <span>·</span> c. 1908</p>
+              <h1>{entry.title}</h1>
+              <p className="info-deck">{entry.place} <span>·</span> {entry.date}</p>
               <div className="rule" />
               <h2>The story</h2>
               <div id="full-story" className="story-copy">
-                <p>At the beginning of the twentieth century, Fifth Avenue was becoming a stage for a profound change in urban life. Early automobiles moved beside horse-drawn carriages while pedestrians filled the pavements.</p>
-                <p>The scene captures neither the first car nor the last carriage. Instead, it preserves the more revealing middle—the years when two eras occupied the same street.</p>
+                {entry.story.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               </div>
               <dl className="record-list">
-                <div><dt>Date</dt><dd>c. 1908</dd></div>
-                <div><dt>Place</dt><dd>Fifth Avenue, New York</dd></div>
+                <div><dt>Date</dt><dd>{entry.date}</dd></div>
+                <div><dt>Place</dt><dd>{entry.place}</dd></div>
                 <div><dt>Creator</dt><dd>Photographer unknown</dd></div>
                 <div><dt>Collection</dt><dd>PikPuk study collection</dd></div>
                 <div><dt>Rights</dt><dd>Representative image</dd></div>
