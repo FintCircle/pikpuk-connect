@@ -75,7 +75,8 @@ function Index() {
   const [mode, setMode] = useState<"photo" | "info" | "set">("photo");
   const [current, setCurrent] = useState(0);
   const [captionsOn, setCaptionsOn] = useState(true);
-  const touchStart = useRef<number | null>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const photoScale = useRef(1);
   const { profile } = useAuth();
 
   useEffect(() => {
@@ -90,6 +91,10 @@ function Index() {
   const move = useCallback((direction: number) => {
     setCurrent((index) => (index + direction + photos.length) % photos.length);
   }, []);
+
+  useEffect(() => {
+    photoScale.current = 1;
+  }, [current, mode]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -111,12 +116,26 @@ function Index() {
         <div
           className="photo-stage"
           onTouchStart={(event) => {
-            touchStart.current = event.touches[0]?.clientX ?? null;
+            if (event.touches.length !== 1 || mode === "info") {
+              touchStart.current = null;
+              return;
+            }
+            const touch = event.touches[0];
+            touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
           }}
           onTouchEnd={(event) => {
-            if (mode !== "set" || touchStart.current === null) return;
-            const end = event.changedTouches[0]?.clientX ?? touchStart.current;
-            if (Math.abs(end - touchStart.current) > 45) move(end < touchStart.current ? 1 : -1);
+            const start = touchStart.current;
+            touchStart.current = null;
+            if (!start || mode === "info" || photoScale.current > 1.01) return;
+            const touch = event.changedTouches[0];
+            if (!touch) return;
+            const deltaX = touch.clientX - start.x;
+            const deltaY = touch.clientY - start.y;
+            if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
+              move(deltaX < 0 ? 1 : -1);
+            }
+          }}
+          onTouchCancel={() => {
             touchStart.current = null;
           }}
         >
@@ -131,6 +150,9 @@ function Index() {
             disabled={mode === "set"}
             wheel={{ step: 0.12 }}
             doubleClick={{ mode: "zoomIn", step: 0.7 }}
+            onTransform={(_ref, state) => {
+              photoScale.current = state.scale;
+            }}
           >
             <TransformComponent
               wrapperClass="photo-canvas"
