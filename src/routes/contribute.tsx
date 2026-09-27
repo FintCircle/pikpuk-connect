@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { ArchiveButton } from "@/components/archive-button";
 import { ArchivePage } from "@/components/archive-page";
+import { SubmissionForm, SubmissionList, SubmissionStats, useMySubmissions } from "@/components/submission-form";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/contribute")({
@@ -41,20 +42,17 @@ function Contribute() {
     );
   }
 
+  return <ContributeDesk showStats={isContributor} />;
+}
+
+function ContributeDesk({ showStats }: { showStats: boolean }) {
+  const { items, reload } = useMySubmissions();
   return (
     <ArchivePage kicker="Contribute" title="Add a piece of the past">
       <div className="submission-panel">
-        <ArchiveButton variant="plain">+ Add a piece of the past</ArchiveButton>
-        {isContributor ? (
-          <div className="submission-stats" aria-label="Your submissions">
-            <h2>Your submissions</h2>
-            <p><strong>3</strong> Published</p>
-            <p><strong>1</strong> Under review</p>
-            <p><strong>1</strong> Draft</p>
-          </div>
-        ) : (
-          <p>Your account is ready for contribution requests. Contributor review tools will be connected in the next publishing workflow.</p>
-        )}
+        <SubmissionForm onSubmitted={reload} />
+        {showStats || items.length ? <SubmissionStats items={items} /> : null}
+        {items.length ? <SubmissionList items={items} /> : null}
       </div>
     </ArchivePage>
   );

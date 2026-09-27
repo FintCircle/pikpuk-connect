@@ -15,6 +15,13 @@
       "when": 1790355326726,
       "tag": "0001_lock_profile_fields_and_add_roles",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790516482994,
+      "tag": "0002_create_submissions",
+      "breakpoints": true
     }
   ]
 }

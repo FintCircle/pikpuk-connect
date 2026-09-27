@@ -160,6 +160,16 @@ button { cursor: pointer; }
 .submission-stats p { margin: 0; }
 .submission-stats strong { font-family: var(--font-serif-custom); font-size: 26px; font-weight: 500; margin-right: 8px; }
 .submission-stats.standalone { max-width: 320px; }
+.submission-form textarea { border: 1px solid var(--border); background: var(--field); color: var(--field-foreground); padding: 10px 12px; font: inherit; font-size: 14px; text-transform: none; letter-spacing: normal; font-weight: 400; resize: vertical; }
+.submission-form input[type="file"] { padding: 10px 12px; font-size: 13px; text-transform: none; letter-spacing: normal; font-weight: 400; }
+.submission-previews { display: flex; flex-wrap: wrap; gap: 8px; }
+.submission-previews img { width: 88px; height: 88px; object-fit: cover; border: 1px solid var(--border); }
+.submission-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); font-family: var(--font-sans-custom); font-size: 13px; }
+.submission-list li { display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); padding: 12px 0; }
+.submission-list img, .submission-thumb-empty { width: 56px; height: 56px; object-fit: cover; background: var(--muted); flex-shrink: 0; }
+.submission-list div { display: grid; gap: 3px; flex: 1; min-width: 0; }
+.submission-list div span, .submission-empty { color: var(--muted-foreground); }
+.submission-list em { font-style: normal; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-foreground); }
 
 .info-panel { min-width: 0; overflow-y: auto; border-left: 1px solid var(--border); background: var(--card); animation: panel-in 550ms cubic-bezier(.65,0,.15,1); }
 .info-panel-inner { max-width: 610px; padding: clamp(42px, 7vw, 94px) clamp(30px, 5vw, 76px) 50px; }
