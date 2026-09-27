@@ -88,7 +88,7 @@ const archiveEntries = [
       credit: "Representative archival image · PikPuk study collection",
     }],
   },
-];
+] as const;
 
 export const Route = createFileRoute("/")({
   head: () => ({
