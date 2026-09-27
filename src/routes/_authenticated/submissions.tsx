@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ArchivePage } from "@/components/archive-page";
+import { SubmissionList, SubmissionStats, useMySubmissions } from "@/components/submission-form";
 
 export const Route = createFileRoute("/_authenticated/submissions")({
   head: () => ({
@@ -17,13 +18,15 @@ export const Route = createFileRoute("/_authenticated/submissions")({
 });
 
 function Submissions() {
+  const { items, loading } = useMySubmissions();
   return (
     <ArchivePage kicker="Contribute" title="Your submissions">
-      <div className="submission-stats standalone">
-        <p><strong>3</strong> Published</p>
-        <p><strong>1</strong> Under review</p>
-        <p><strong>1</strong> Draft</p>
-      </div>
+      {loading ? <p>Loading…</p> : (
+        <div className="submission-panel">
+          <SubmissionStats items={items} />
+          <SubmissionList items={items} />
+        </div>
+      )}
     </ArchivePage>
   );
 }
