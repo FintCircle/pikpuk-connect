@@ -88,7 +88,7 @@ const archiveEntries = [
       credit: "Representative archival image · PikPuk study collection",
     }],
   },
-];
+] as const;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -153,7 +153,8 @@ function Index() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [mode, move]);
 
-  const entry = archiveEntries[entryIndex] ?? archiveEntries[0];
+  const entry = archiveEntries[entryIndex];
+  if (!entry) return null;
   const photos = entry.photos;
   const photo = photos[current] ?? photos[0] ?? primaryPhoto;
 
