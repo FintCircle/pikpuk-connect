@@ -33,7 +33,7 @@ function MenuButton({ label, subtext, onClick }: { label: string; subtext?: stri
 
 export function PikPukHeader() {
   const navigate = useNavigate();
-  const { user, isContributor, isLoading, signOut } = useAuth();
+  const { user, isContributor, isAdmin, isLoading, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const [contributionPrompt, setContributionPrompt] = useState(false);
   const signedIn = Boolean(user);
@@ -133,6 +133,7 @@ export function PikPukHeader() {
                     <MenuAnchor href="/interests" label="Interests" onSelect={closeMenu} />
                     <MenuAnchor href="/settings" label="Settings" onSelect={closeMenu} />
                     <MenuAnchor href="/account" label="Account" onSelect={closeMenu} />
+                    {isAdmin ? <MenuAnchor href="/review" label="Review submissions" onSelect={closeMenu} /> : null}
                   </nav>
                 ) : (
                   <nav className="menu-section" aria-label="Account access">

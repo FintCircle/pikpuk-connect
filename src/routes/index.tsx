@@ -175,7 +175,7 @@ function Index() {
   const moveEntry = useCallback((direction: number) => {
     setEntryIndex((index) => (index + direction + entries.length) % entries.length);
     setCurrent(0);
-  }, []);
+  }, [entries.length]);
 
   useEffect(() => {
     photoScale.current = 1;
