@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables, TablesUpdate } from "@/integrations/supabase/types";
 
 type ProfileRow = Tables<"profiles">;
-const authRedirects = ["/", "/interests", "/settings", "/account", "/contribute", "/submissions"] as const;
+const authRedirects = ["/", "/review", "/interests", "/settings", "/account", "/contribute", "/submissions"] as const;
 
 type ProfileUpdate = Pick<
   TablesUpdate<"profiles">,
@@ -22,6 +22,7 @@ type AuthContextValue = {
   user: User | null;
   profile: PikPukProfile | null;
   isContributor: boolean;
+  isAdmin: boolean;
   isLoading: boolean;
   refreshProfile: () => Promise<void>;
   updateProfile: (patch: ProfileUpdate) => Promise<PikPukProfile>;
@@ -94,6 +95,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<PikPukProfile | null>(null);
   const [isContributor, setIsContributor] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadProfileForUser = useCallback(async (nextUser: User) => {
@@ -106,6 +108,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
     if (rolesError) throw rolesError;
 
     setProfile(nextProfile);
+    setIsAdmin((roles ?? []).some((role) => role.role === "admin"));
     setIsContributor(
       nextProfile.contributor_status === "contributor" ||
         (roles ?? []).some((role) => role.role === "contributor"),
@@ -118,6 +121,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
       setUser(null);
       setProfile(null);
       setIsContributor(false);
+      setIsAdmin(false);
       return;
     }
 
@@ -150,6 +154,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
     setUser(null);
     setProfile(null);
     setIsContributor(false);
+      setIsAdmin(false);
   }, [queryClient]);
 
   useEffect(() => {
@@ -164,6 +169,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
           setUser(null);
           setProfile(null);
           setIsContributor(false);
+      setIsAdmin(false);
           return;
         }
         setUser(data.user);
@@ -183,6 +189,7 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
       if (!nextUser) {
         setProfile(null);
         setIsContributor(false);
+      setIsAdmin(false);
         queryClient.clear();
       } else {
         void queryClient.invalidateQueries();
@@ -202,8 +209,8 @@ export function AuthProvider({ children, queryClient }: { children: ReactNode; q
   }, [loadProfileForUser, queryClient, router]);
 
   const value = useMemo(
-    () => ({ user, profile, isContributor, isLoading, refreshProfile, updateProfile, signOut }),
-    [user, profile, isContributor, isLoading, refreshProfile, updateProfile, signOut],
+    () => ({ user, profile, isContributor, isAdmin, isLoading, refreshProfile, updateProfile, signOut }),
+    [user, profile, isContributor, isAdmin, isLoading, refreshProfile, updateProfile, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

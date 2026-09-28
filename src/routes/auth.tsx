@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 
 type AuthMode = "signin" | "signup";
-const allowedRedirects = ["/", "/interests", "/settings", "/account", "/contribute", "/submissions"] as const;
+const allowedRedirects = ["/", "/review", "/interests", "/settings", "/account", "/contribute", "/submissions"] as const;
 type AllowedRedirect = (typeof allowedRedirects)[number];
 
 function cleanRedirect(value: unknown): AllowedRedirect {
