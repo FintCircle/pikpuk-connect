@@ -23,6 +23,7 @@ import { Route as RightsRouteImport } from './routes/rights'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedInterestsRouteImport } from './routes/_authenticated/interests'
+import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSubmissionsRouteImport } from './routes/_authenticated/submissions'
 
@@ -95,6 +96,11 @@ const AuthenticatedInterestsRoute = AuthenticatedInterestsRouteImport.update({
   path: '/interests',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/account': typeof AuthenticatedAccountRoute
   '/interests': typeof AuthenticatedInterestsRoute
+  '/review': typeof AuthenticatedReviewRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/submissions': typeof AuthenticatedSubmissionsRoute
 }
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/account': typeof AuthenticatedAccountRoute
   '/interests': typeof AuthenticatedInterestsRoute
+  '/review': typeof AuthenticatedReviewRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/submissions': typeof AuthenticatedSubmissionsRoute
 }
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/interests': typeof AuthenticatedInterestsRoute
+  '/_authenticated/review': typeof AuthenticatedReviewRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/submissions': typeof AuthenticatedSubmissionsRoute
 }
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/account'
     | '/interests'
+    | '/review'
     | '/settings'
     | '/submissions'
   fileRoutesByTo: FileRoutesByTo
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/account'
     | '/interests'
+    | '/review'
     | '/settings'
     | '/submissions'
   id:
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/account'
     | '/_authenticated/interests'
+    | '/_authenticated/review'
     | '/_authenticated/settings'
     | '/_authenticated/submissions'
   fileRoutesById: FileRoutesById
@@ -330,6 +342,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInterestsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/review': {
+      id: '/_authenticated/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof AuthenticatedReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -350,6 +369,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedInterestsRoute: typeof AuthenticatedInterestsRoute
+  AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSubmissionsRoute: typeof AuthenticatedSubmissionsRoute
 }
@@ -357,6 +377,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedInterestsRoute: AuthenticatedInterestsRoute,
+  AuthenticatedReviewRoute: AuthenticatedReviewRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSubmissionsRoute: AuthenticatedSubmissionsRoute,
 }
