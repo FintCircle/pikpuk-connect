@@ -17,7 +17,16 @@ import kampalaRailway from "@/assets/kampala-railway-1915.jpg";
 import londonMarket from "@/assets/london-flower-market-1928.jpg";
 import { ArchiveButton } from "@/components/archive-button";
 import { PikPukHeader } from "@/components/pikpuk-header";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+
+type ViewerEntry = {
+  readonly title: string;
+  readonly place: string;
+  readonly date: string;
+  readonly story: readonly string[];
+  readonly photos: readonly { readonly src: string; readonly alt: string; readonly caption: string; readonly credit: string }[];
+};
 
 const primaryPhoto = {
   src: avenue,
@@ -119,6 +128,35 @@ function Index() {
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const photoScale = useRef(1);
   const { profile } = useAuth();
+  const [published, setPublished] = useState<ViewerEntry[]>([]);
+  const entries: readonly ViewerEntry[] = [...archiveEntries, ...published];
+
+  useEffect(() => {
+    void supabase
+      .from("submissions")
+      .select("title,place,date_label,story,photos")
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        const next = (data ?? []).flatMap((row) => {
+          const media = (row.photos as unknown as { publicUrl: string }[]) ?? [];
+          if (!media.length) return [];
+          return [{
+            title: row.title,
+            place: row.place ?? "",
+            date: row.date_label ?? "",
+            story: row.story ? row.story.split(/\n{2,}/) : [],
+            photos: media.map((m) => ({
+              src: m.publicUrl,
+              alt: row.title,
+              caption: [row.title, row.place, row.date_label].filter(Boolean).join(", "),
+              credit: "Contributed to PikPuk",
+            })),
+          }];
+        });
+        setPublished(next);
+      });
+  }, []);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("pikpuk-captions");
