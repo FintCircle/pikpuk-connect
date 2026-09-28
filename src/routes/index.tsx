@@ -130,12 +130,12 @@ function Index() {
   }, [profile]);
 
   const move = useCallback((direction: number) => {
-    const photoCount = archiveEntries[entryIndex]?.photos.length ?? 1;
+    const photoCount = entries[entryIndex]?.photos.length ?? 1;
     setCurrent((index) => (index + direction + photoCount) % photoCount);
   }, [entryIndex]);
 
   const moveEntry = useCallback((direction: number) => {
-    setEntryIndex((index) => (index + direction + archiveEntries.length) % archiveEntries.length);
+    setEntryIndex((index) => (index + direction + entries.length) % entries.length);
     setCurrent(0);
   }, []);
 
@@ -153,7 +153,7 @@ function Index() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [mode, move]);
 
-  const entry = archiveEntries[entryIndex];
+  const entry = entries[entryIndex];
   if (!entry) return null;
   const photos = entry.photos;
   const photo = photos[current] ?? photos[0] ?? primaryPhoto;
