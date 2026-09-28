@@ -223,4 +223,8 @@ button { cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
-}
+}.review-card { display: grid; gap: 10px; border-bottom: 1px solid var(--border); padding: 18px 0; }
+.review-card h3 { margin: 0; font-family: var(--font-serif-custom); font-size: 24px; font-weight: 500; }
+.review-card p { margin: 0; font-family: var(--font-sans-custom); font-size: 13px; white-space: pre-line; }
+.review-card .review-meta { color: var(--muted-foreground); }
+.review-card .page-actions { margin-top: 6px; }
