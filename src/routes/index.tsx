@@ -167,15 +167,38 @@ function Index() {
     if (profile) setCaptionsOn(profile.captions_enabled);
   }, [profile]);
 
+  const slideTimer = useRef<number | null>(null);
+  const [slide, setSlide] = useState<{ dir: number; photo: { src: string; alt: string } } | null>(null);
+
+  const beginSlide = useCallback((dir: number, from: { src: string; alt: string }) => {
+    setSlide({ dir, photo: from });
+    if (slideTimer.current) window.clearTimeout(slideTimer.current);
+    slideTimer.current = window.setTimeout(() => setSlide(null), 640);
+  }, []);
+
+  useEffect(() => () => {
+    if (slideTimer.current) window.clearTimeout(slideTimer.current);
+  }, []);
+
   const move = useCallback((direction: number) => {
-    const photoCount = entries[entryIndex]?.photos.length ?? 1;
-    setCurrent((index) => (index + direction + photoCount) % photoCount);
-  }, [entryIndex]);
+    const list = entries[entryIndex]?.photos;
+    if (!list?.length) return;
+    const from = list[current] ?? list[0];
+    const next = (current + direction + list.length) % list.length;
+    if (next === current || !from) return;
+    beginSlide(direction, from);
+    setCurrent(next);
+  }, [entries, entryIndex, current, beginSlide]);
 
   const moveEntry = useCallback((direction: number) => {
-    setEntryIndex((index) => (index + direction + entries.length) % entries.length);
+    const fromEntry = entries[entryIndex];
+    const next = (entryIndex + direction + entries.length) % entries.length;
+    if (!fromEntry || next === entryIndex) return;
+    const from = fromEntry.photos[current] ?? fromEntry.photos[0];
+    if (from) beginSlide(direction, from);
+    setEntryIndex(next);
     setCurrent(0);
-  }, [entries.length]);
+  }, [entries, entryIndex, current, beginSlide]);
 
   useEffect(() => {
     photoScale.current = 1;
@@ -251,7 +274,7 @@ function Index() {
               }}
             >
               <img
-                className="primary-photo"
+                className={`primary-photo${slide ? ` photo-enter-${slide.dir > 0 ? "right" : "left"}` : ""}`}
                 src={photo.src}
                 alt={photo.alt}
                 width={1536}
@@ -261,6 +284,17 @@ function Index() {
               />
             </TransformComponent>
           </TransformWrapper>
+
+          {slide && (
+            <img
+              key={`exit-${slide.photo.src}`}
+              className={`primary-photo photo-exit-${slide.dir > 0 ? "left" : "right"}`}
+              src={slide.photo.src}
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+            />
+          )}
 
           {mode === "photo" && (
             <ArchiveButton
@@ -288,7 +322,7 @@ function Index() {
           )}
 
           {captionsOn && mode !== "set" && (
-            <div className="caption-wash">
+            <div className="caption-wash" key={photo.caption}>
               <p className="caption" id="photo-caption">{photo.caption}</p>
             </div>
           )}
