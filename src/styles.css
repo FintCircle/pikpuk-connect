@@ -86,6 +86,17 @@ button { cursor: pointer; }
 .photo-canvas:active { cursor: grabbing; }
 .photo-canvas-content { width: 100% !important; height: 100% !important; }
 .primary-photo { width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; }
+@keyframes photo-enter-right { from { opacity: 0; transform: translateX(16%) scale(1.035); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes photo-enter-left { from { opacity: 0; transform: translateX(-16%) scale(1.035); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes photo-exit-left { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-11%); } }
+@keyframes photo-exit-right { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(11%); } }
+.photo-enter-right { animation: photo-enter-right 560ms cubic-bezier(.2,.85,.25,1) both; }
+.photo-enter-left { animation: photo-enter-left 560ms cubic-bezier(.2,.85,.25,1) both; }
+.photo-exit-left, .photo-exit-right { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.photo-exit-left { animation: photo-exit-left 560ms cubic-bezier(.5,.05,.7,.4) both; }
+.photo-exit-right { animation: photo-exit-right 560ms cubic-bezier(.5,.05,.7,.4) both; }
+@keyframes caption-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.caption-wash { animation: caption-rise 640ms 120ms ease-out both; }
 .info-square { position: absolute; top: 24px; right: 24px; z-index: 3; }
 .square-date { font-family: var(--font-serif-custom); font-size: 28px; line-height: 1; }
 .square-place { font-family: var(--font-serif-custom); font-size: 16px; line-height: 1.05; }
