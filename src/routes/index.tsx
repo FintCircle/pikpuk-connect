@@ -274,7 +274,7 @@ function Index() {
               }}
             >
               <img
-                className="primary-photo"
+                className={`primary-photo${slide ? ` photo-enter-${slide.dir > 0 ? "right" : "left"}` : ""}`}
                 src={photo.src}
                 alt={photo.alt}
                 width={1536}
@@ -284,6 +284,17 @@ function Index() {
               />
             </TransformComponent>
           </TransformWrapper>
+
+          {slide && (
+            <img
+              key={`exit-${slide.photo.src}`}
+              className={`primary-photo photo-exit-${slide.dir > 0 ? "left" : "right"}`}
+              src={slide.photo.src}
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+            />
+          )}
 
           {mode === "photo" && (
             <ArchiveButton
@@ -311,7 +322,7 @@ function Index() {
           )}
 
           {captionsOn && mode !== "set" && (
-            <div className="caption-wash">
+            <div className="caption-wash" key={photo.caption}>
               <p className="caption" id="photo-caption">{photo.caption}</p>
             </div>
           )}
