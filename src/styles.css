@@ -206,7 +206,7 @@ button { cursor: pointer; }
   .wordmark { font-size: 24px; }
   .viewer, .viewer-info { height: calc(100svh - 56px); display: block; overflow: hidden; }
   .photo-stage { height: 100%; }
-  .primary-photo { object-fit: cover; }
+  .primary-photo, .photo-exit-left, .photo-exit-right { object-fit: cover; }
   .info-square { top: 14px; right: 14px; width: 104px; }
   .square-date { font-size: 24px; }
   .caption-wash { padding: 80px 70px 22px 18px; }
