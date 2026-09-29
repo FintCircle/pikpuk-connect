@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ArchiveButton } from "@/components/archive-button";
 import { ArchivePage } from "@/components/archive-page";
-import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 
@@ -84,14 +83,11 @@ function AuthPage() {
   const googleSignIn = async () => {
     setError("");
     window.sessionStorage.setItem("pikpuk-auth-redirect", redirect);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth` },
     });
-    if (result.error) setError(result.error.message);
-    if (!result.redirected && !result.error) {
-      await refreshProfile();
-      void navigate({ to: redirect });
-    }
+    if (oauthError) setError(oauthError.message);
   };
 
   const recover = async () => {
